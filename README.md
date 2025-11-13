@@ -76,7 +76,7 @@ npm run dev
 npm start
 
 # Endpoints da API
-# Base URL
+Base URL
 
 Local: http://localhost:3000/api/v1
 
@@ -100,7 +100,7 @@ Verifica se a API está respondendo.
 
 Cria um novo usuário e retorna um token JWT.
 
-# Body (JSON):
+Body (JSON):
 
 {
   "name": "Joao",
@@ -109,7 +109,7 @@ Cria um novo usuário e retorna um token JWT.
 }
 
 
-# Respostas:
+Respostas:
 
 201 Created – Usuário criado com sucesso + token JWT
 
@@ -121,7 +121,7 @@ Cria um novo usuário e retorna um token JWT.
 
 Realiza login e retorna um token JWT.
 
-# Body (JSON):
+Body (JSON):
 
 {
   "email": "joao@example.com",
@@ -129,7 +129,7 @@ Realiza login e retorna um token JWT.
 }
 
 
-# Respostas:
+Respostas:
 
 200 OK – Login bem-sucedido + token JWT
 
@@ -148,15 +148,15 @@ Authorization: Bearer SEU_TOKEN_AQUI
 
 Lista todas as tarefas do usuário autenticado.
 
-# Headers:
+Headers:
 
 Authorization: Bearer SEU_TOKEN_AQUI
 
-# Respostas:
+Respostas:
 
 200 OK – Retorna um array de tarefas do usuário
 
-# Exemplo de resposta:
+Exemplo de resposta:
 
 {
   "tasks": [
@@ -179,11 +179,11 @@ Authorization: Bearer SEU_TOKEN_AQUI
 
 Busca uma tarefa específica do usuário autenticado.
 
-# Headers:
+Headers:
 
 Authorization: Bearer SEU_TOKEN_AQUI
 
-# Respostas:
+Respostas:
 
 200 OK – Retorna a tarefa
 
@@ -194,11 +194,11 @@ Authorization: Bearer SEU_TOKEN_AQUI
 
 Cria uma nova tarefa.
 
-# Headers:
+Headers:
 
 Authorization: Bearer SEU_TOKEN_AQUI
 
-# Body (JSON):
+Body (JSON):
 
 {
   "title": "Estudar API",
@@ -218,7 +218,7 @@ status (opcional, valores permitidos: "pendente", "em_andamento", "concluida")
 
 dueDate (opcional, data em formato ISO: YYYY-MM-DD)
 
-# Respostas:
+Respostas:
 
 201 Created – Tarefa criada com sucesso
 
@@ -226,7 +226,7 @@ dueDate (opcional, data em formato ISO: YYYY-MM-DD)
 
 401 Unauthorized – Token ausente ou inválido
 
-# Exemplo de resposta:
+Exemplo de resposta:
 
 {
   "message": "Tarefa criada com sucesso",
@@ -248,11 +248,11 @@ dueDate (opcional, data em formato ISO: YYYY-MM-DD)
 
 Atualiza uma tarefa existente do usuário autenticado.
 
-# Headers:
+Headers:
 
 Authorization: Bearer SEU_TOKEN_AQUI
 
-# Body (JSON) – todos os campos opcionais:
+Body (JSON) – todos os campos opcionais:
 
 {
   "title": "Estudar API com calma",
@@ -262,7 +262,7 @@ Authorization: Bearer SEU_TOKEN_AQUI
 }
 
 
-# Respostas:
+Respostas:
 
 200 OK – Tarefa atualizada com sucesso
 
@@ -277,11 +277,11 @@ Authorization: Bearer SEU_TOKEN_AQUI
 
 Deleta uma tarefa do usuário autenticado.
 
-# Headers:
+Headers:
 
 Authorization: Bearer SEU_TOKEN_AQUI
 
-# Respostas:
+Respostas:
 
 200 OK – Tarefa deletada com sucesso
 
@@ -312,7 +312,7 @@ npm test
 
 # Organização dos commits e issues
 
-# O desenvolvimento foi organizado em blocos, com commits semânticos, por exemplo:
+O desenvolvimento foi organizado em blocos, com commits semânticos, por exemplo:
 
 chore: setup inicial do projeto Node e Express
 
