@@ -2,9 +2,9 @@
 const express = require('express');
 const cors = require('cors');
 
-const authRoutes = require('./routes/authRoutes'); 
-const taskRoutes = require('./routes/taskRoutes'); 
-const { errorHandler, notFound } = require('./middlewares/errorMiddleware'); 
+const authRoutes = require('./routes/authRoutes');
+const taskRoutes = require('./routes/taskRoutes');
+const { errorHandler, notFound } = require('./middlewares/errorMiddleware');
 
 const app = express();
 
@@ -17,7 +17,7 @@ app.get('/api/v1/health', (req, res) => {
   res.status(200).json({ status: 'ok', message: 'API de Tarefas funcionando' });
 });
 
-
+// Rotas de autenticação e tarefas
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/tasks', taskRoutes);
 

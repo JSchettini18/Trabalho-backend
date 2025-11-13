@@ -38,5 +38,8 @@ const taskSchema = new mongoose.Schema(
 
 const Task = mongoose.model('Task', taskSchema);
 
-module.exports = Task;
-module.exports.allowedStatus = allowedStatus;
+// Exportando como objeto com duas propriedades
+module.exports = {
+  Task,
+  allowedStatus,
+};
