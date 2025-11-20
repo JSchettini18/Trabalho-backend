@@ -70,6 +70,10 @@ JWT_SECRET=uma_chave_bem_secreta
 
 npm run dev
 
+# Rodar a documentaçao no Swagger pelo navegador
+
+http://localhost:3000/api-docs
+
 
 # Rodar em modo “produção” simples
 

@@ -1,0 +1,461 @@
+openapi: 3.0.0
+info:
+  title: API RESTful de Tarefas
+  description: API para gerenciamento de tarefas com autenticação JWT. Desenvolvida em Node.js, Express e MongoDB.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+    description: Servidor local de desenvolvimento
+
+paths:
+  /api/v1/health:
+    get:
+      tags:
+        - Health
+      summary: Health-check da API
+      description: Verifica se a API está respondendo corretamente.
+      responses:
+        '200':
+          description: API ativa e respondendo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  message:
+                    type: string
+                    example: API de Tarefas funcionando
+
+  /api/v1/auth/register:
+    post:
+      tags:
+        - Autenticação
+      summary: Registro de usuário
+      description: Cria um novo usuário e retorna um token JWT.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Usuário criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Erro de validação dos dados de entrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '409':
+          description: E-mail já cadastrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/auth/login:
+    post:
+      tags:
+        - Autenticação
+      summary: Login de usuário
+      description: Realiza login de usuário existente e retorna um token JWT válido.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login realizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Erro de validação dos dados de entrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '401':
+          description: Credenciais inválidas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/tasks:
+    get:
+      tags:
+        - Tarefas
+      summary: Listar tarefas
+      description: Lista todas as tarefas pertencentes ao usuário autenticado.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de tarefas retornada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskListResponse'
+        '401':
+          description: Token ausente ou inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Tarefas
+      summary: Criar tarefa
+      description: Cria uma nova tarefa associada ao usuário autenticado.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreateRequest'
+      responses:
+        '201':
+          description: Tarefa criada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskSingleResponse'
+        '400':
+          description: Erro de validação dos dados de entrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '401':
+          description: Token ausente ou inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/tasks/{id}:
+    get:
+      tags:
+        - Tarefas
+      summary: Buscar tarefa por ID
+      description: Retorna uma tarefa específica do usuário autenticado.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: ID da tarefa a ser buscada
+          required: true
+          schema:
+            type: string
+            example: 656f0c...
+      responses:
+        '200':
+          description: Tarefa encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskSingleResponse'
+        '401':
+          description: Token ausente ou inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Tarefa não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+        - Tarefas
+      summary: Atualizar tarefa
+      description: Atualiza uma tarefa específica do usuário autenticado.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: ID da tarefa a ser atualizada
+          required: true
+          schema:
+            type: string
+            example: 656f0c...
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskUpdateRequest'
+      responses:
+        '200':
+          description: Tarefa atualizada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskSingleResponse'
+        '400':
+          description: Erro de validação dos dados de entrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '401':
+          description: Token ausente ou inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Tarefa não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - Tarefas
+      summary: Deletar tarefa
+      description: Remove uma tarefa específica do usuário autenticado.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: ID da tarefa a ser deletada
+          required: true
+          schema:
+            type: string
+            example: 656f0c...
+      responses:
+        '200':
+          description: Tarefa deletada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Tarefa deletada com sucesso
+        '401':
+          description: Token ausente ou inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Tarefa não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Informe o token JWT no formato "Bearer {token}"
+
+  schemas:
+    RegisterRequest:
+      type: object
+      required:
+        - name
+        - email
+        - password
+      properties:
+        name:
+          type: string
+          example: Joao Cunha
+        email:
+          type: string
+          format: email
+          example: joao@example.com
+        password:
+          type: string
+          format: password
+          example: 123456
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: joao@example.com
+        password:
+          type: string
+          format: password
+          example: 123456
+
+    AuthUser:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 656f0b...
+        name:
+          type: string
+          example: Joao
+        email:
+          type: string
+          example: joao@example.com
+
+    AuthResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Login realizado com sucesso
+        user:
+          $ref: '#/components/schemas/AuthUser'
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+    Task:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 656f0c...
+        title:
+          type: string
+          example: Estudar backend
+        description:
+          type: string
+          example: Finalizar trabalho da faculdade
+        status:
+          type: string
+          enum:
+            - pendente
+            - em_andamento
+            - concluida
+          example: pendente
+        dueDate:
+          type: string
+          format: date-time
+          example: 2025-11-30T00:00:00.000Z
+        createdBy:
+          type: string
+          example: 656f0b...
+        createdAt:
+          type: string
+          format: date-time
+          example: 2025-11-13T10:00:00.000Z
+        updatedAt:
+          type: string
+          format: date-time
+          example: 2025-11-13T10:00:00.000Z
+
+    TaskCreateRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          example: Estudar API
+        description:
+          type: string
+          example: Fazer trabalho da faculdade
+        status:
+          type: string
+          enum:
+            - pendente
+            - em_andamento
+            - concluida
+          example: pendente
+        dueDate:
+          type: string
+          format: date
+          example: 2025-11-30
+
+    TaskUpdateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Estudar API com calma
+        description:
+          type: string
+          example: Refinar o projeto
+        status:
+          type: string
+          enum:
+            - pendente
+            - em_andamento
+            - concluida
+          example: em_andamento
+        dueDate:
+          type: string
+          format: date
+          example: 2025-12-01
+
+    TaskListResponse:
+      type: object
+      properties:
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+
+    TaskSingleResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Tarefa criada com sucesso
+        task:
+          $ref: '#/components/schemas/Task'
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Mensagem de erro
+
+    ValidationError:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Erro de validação
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              msg:
+                type: string
+                example: Campo obrigatório
+              param:
+                type: string
+                example: email
+              location:
+                type: string
+                example: body
